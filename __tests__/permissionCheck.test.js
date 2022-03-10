@@ -12,7 +12,7 @@ describe("Test PermissionHandler.verifyPermissionIsValid", () => {
   });
   it('Should throw PermissionError("This user is not allowed to execute this action") exception', () => {
     try {
-      PermissionHandler.verifyPermissionIsValid("common", "create_user");
+      PermissionHandler.verifyPermissionIsValid("common", ["create_user"]);
     } catch (err) {
       expect(err).toBeInstanceOf(PermissionError);
       expect(err.message).toBe(
@@ -21,14 +21,14 @@ describe("Test PermissionHandler.verifyPermissionIsValid", () => {
     }
   });
   it('Should allow to execute action "create_user" to user "admin"', () => {
-    PermissionHandler.verifyPermissionIsValid("admin", "create_user");
+    PermissionHandler.verifyPermissionIsValid("admin", ["create_user"]);
   });
-  it('Should throw PermissionError("Invalid permission") when pass nonexistent permission', () => {
+  it("Should throw PermissionError('Permission \"get_plans\" is invalid') when pass nonexistent permission", () => {
     try {
-      PermissionHandler.verifyPermissionIsValid("admin", "get_plans");
+      PermissionHandler.verifyPermissionIsValid("admin", ["get_plans"]);
     } catch (err) {
       expect(err).toBeInstanceOf(PermissionError);
-      expect(err.message).toBe("Invalid permission");
+      expect(err.message).toBe('Permission "get_plans" is invalid');
     }
   });
 });

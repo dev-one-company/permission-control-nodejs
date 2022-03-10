@@ -23,17 +23,24 @@ function findPermissionOnAll(permission: PermissionsList) {
 export class PermissionHandler {
   public static verifyPermissionIsValid(
     user: UsersType,
-    permissionToCheck: PermissionsList,
+    permissionsToCheck: PermissionsList[],
   ) {
     if (!Object.keys(permissions).find(userItem => userItem === user))
       throw new PermissionError("Invalid user");
-    if (!findPermissionOnAll(permissionToCheck))
-      throw new PermissionError("Invalid permission");
+
+    for (const permissionToCheck of permissionsToCheck) {
+      const result = findPermissionOnAll(permissionToCheck);
+      if (!result) {
+        throw new PermissionError(
+          `Permission "${permissionToCheck}" is invalid`,
+        );
+      }
+    }
 
     const userPermissionsAllowed = permissions[user];
 
-    const findPermissionValid = userPermissionsAllowed.find(
-      permission => permission === permissionToCheck,
+    const findPermissionValid = permissionsToCheck.find(perm =>
+      userPermissionsAllowed.some(userPerm => userPerm === perm),
     );
 
     if (!findPermissionValid) {
